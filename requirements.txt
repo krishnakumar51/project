@@ -17,7 +17,7 @@ grpcio==1.32.0
 h5py==2.10.0
 idna==2.10
 itsdangerous==1.1.0
-Keras-Preprocessing==1.1.2
+keras-Preprocessing==1.1.2
 Markdown==3.3.4
 MarkupSafe==1.1.1
 oauthlib==3.1.0

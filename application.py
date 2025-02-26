@@ -5,7 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 import time
 import cv2
-import helper
+import helper 
 import settings
 from pathlib import Path
 import streamlit as st
@@ -46,33 +46,36 @@ def classifywaste():
         image_data.close()
         try:
             os.remove(image_path)
-        except PermissionError:
-            print(f"PermissionError: Could not delete {image_path}, it might be locked by another process")
+        except (PermissionError, FileNotFoundError):
+            print(f"Could not delete {image_path}. It might be locked or already deleted.")
     
     # Return the classification result
     return jsonify(predicted_value=predicted_value, details=details, video1=video1, video2=video2)
 
+
 # Frame generator for live video
 def generate_frames():
-    cap = cv2.VideoCapture(0)  # 0 = default webcam
+    cap = cv2.VideoCapture(0)  # Open webcam
     while True:
         success, frame = cap.read()
         if not success:
             break
-        
-        # Classify each frame using a "play_webcam_frame"-style function
-        frame, _ = helper.play_webcam_frame(frame, model)
 
-        # Encode the frame as JPEG
+        # Process frame using your function and capture the annotated frame
+        frame = helper._display_detected_frames(model, frame)
+
+        # Convert the annotated frame into a format Flask can stream
         ret, buffer = cv2.imencode('.jpg', frame)
         if not ret:
             break
 
-        # Yield each frame in a multipart/x-mixed-replace response
+        # Yield frame for Flask video streaming
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
-    
+
     cap.release()
+
+
 
 # Route that streams the webcam feed with classification overlays
 @application.route("/live_video")

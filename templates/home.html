@@ -3,8 +3,13 @@
 
 <div class="container">
   <br>
+  <!-- Loading Animation: Rocket -->
+  <div id="loading" style="display: none; text-align: center; margin-bottom: 20px;">
+    <img src="{{ url_for('static', filename='images/rocket.gif') }}" alt="Loading..." style="max-width: 100px;">
+  </div>
+  
   <!-- Row 1: Waste Classification & About -->
-	<div class="row">
+  <div class="row">
     <div class="col-md-6 classy_frame" style="padding-top: 0%;">
       <center><h3 style="text-transform: capitalize;">Classify Your Waste Material</h3></center>
       <img id="preview" src="{{ url_for('static', filename='images/reuse.png') }}" height="400px" width="100%" title="client pic">
@@ -59,82 +64,19 @@
       </center>
     </div>
   </div>
-
-  <!-- Row 3: Videos & Additional Sections -->
-	<div class="row" id="recycling-videos">
-    <br>
-    <hr>
-    <h3 id="video-title"></h3>
-    <div class="col-md-6 col-xs-6 classy_frame" style="padding-top: 0%; padding-bottom: 2%;">
-      <div class="embed-responsive embed-responsive-16by9"> 
-        <iframe id="video1" width="560" height="315" src="https://www.youtube.com/embed/zO3jFKiqmHo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;" allowfullscreen></iframe>
-      </div>
-    </div>
-    <div class="col-md-6 col-xs-6 classy_frame" style="padding-top: 0%; padding-bottom: 2%;">
-      <div class="embed-responsive embed-responsive-16by9"> 
-        <iframe id="video2" width="560" height="315" src="https://www.youtube.com/embed/I_fUpP-hq3A" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-
-	<div class="row" id="what-if">
-    <br>
-    <hr>
-    <div class="col-md-6 col-xs-6 classy_frame" style="padding-top: 0%; padding-bottom: 2%;">
-      <center><h2 style="text-transform: capitalize;">What If We Stopped Recycling?</h2></center>
-      <div class="embed-responsive embed-responsive-16by9"> 
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/8fFJOzXxB54" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;" allowfullscreen></iframe>
-      </div>
-    </div>
-    <div class="col-md-6 col-xs-6 classy_frame" style="padding-top: 0%; padding-bottom: 2%;">
-      <center><h2 style="text-transform: capitalize;">What If We Created No Waste?</h2></center>
-      <div class="embed-responsive embed-responsive-16by9"> 
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/wWbL7Mv2MFw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-
-	<div class="row" id="motivation">
-    <br>
-    <hr>
-    <h3>Why We Need Awareness</h3>
-    <div class="col-md-12 classy_frame" style="padding-top: 0%; padding-bottom: 2%;">
-      <div class="embed-responsive embed-responsive-16by9"> 
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/NhF4pXBNfq8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-
-  <div class="row" id="quotes">
-    <br>
-    <hr>
-    <div class="col-md-6 col-xs-6 classy_frame" style="padding-top: 0%;">
-      <h4>They don’t dive into the swimming pool; they dive into the mud. We can't even imagine how they would feel.</h4>
-    </div>
-    <div class="col-md-6 col-xs-6 classy_frame" style="padding-top: 0%;">
-      <h4>Your one step to waste recycling can make a cleaner’s life 10 minutes better.<br> &nbsp;</h4>
-    </div>
-  </div>
+  
 </div>
 
 <script>
   var imgData;
   var loading = document.getElementById("loading");
-  var whatif = document.getElementById("what-if");
-  var motivation = document.getElementById("motivation");
-  var quotes = document.getElementById("quotes");
-  var recyclingvideos = document.getElementById("recycling-videos");
+  var about = document.getElementById("about");
 
-  whatif.style.display = "none";
-  motivation.style.display = "none";
-  quotes.style.display = "none";
-  recyclingvideos.style.display = "none";
-  
   function previewImage(){
     var file = document.getElementById("file").files;
     if(file.length > 0){
       var fileName = file[0].name;
-      var allowed_extensions = ["jpeg", "jpg","png"];
+      var allowed_extensions = ["jpeg", "jpg", "png"];
       var file_extension = fileName.split('.').pop().toLowerCase(); 
 
       if(allowed_extensions.includes(file_extension)){
@@ -159,12 +101,9 @@
   function classifyWaste(){
     var file = document.getElementById("file").files;
     if(file.length > 0){
+      // Show the rocket animation during processing
       loading.style.display = "block";
-      whatif.style.display = "block";
-      motivation.style.display = "block";
-      quotes.style.display = "block";
-      recyclingvideos.style.display = "block";
-
+      
       var form_data = new FormData();
       form_data.append("file", document.getElementById("file").files[0]);
       $.ajax({
@@ -178,19 +117,10 @@
         success: function (data) {
           var predicted_value = data["predicted_value"];
           var details = data["details"];
-          var video1 = data["video1"];
-          var video2 = data["video2"];
-
-          var about = document.getElementById("about");
-          var videotitle = document.getElementById("video-title");
-
+          // Update the about section with classification details
           about.innerHTML = "<center><h3>Waste classified as <b style='background-color: #0b2438;'>" 
               + predicted_value + "</b> material</h3></center><h4>"+ details +"</h4>";
-          videotitle.innerHTML = "How " + predicted_value + " Recycling Works?";
-
-          document.getElementById("video1").setAttribute("src", "https://www.youtube.com/embed/" + video1);
-          document.getElementById("video2").setAttribute("src", "https://www.youtube.com/embed/" + video2);
-
+          // Hide the loading rocket animation when processing is complete
           loading.style.display = "none";
         }
       });
@@ -202,7 +132,7 @@
     }
   }
 
-  // Toggles the live video feed
+  // Toggle the live video feed
   function toggleLiveVideo() {
     var liveImg = document.getElementById("live-video");
     if (liveImg.style.display === "none") {
