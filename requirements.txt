@@ -4,7 +4,7 @@ cachetools==4.2.1
 certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
-numpy==1.19.5
+numpy==1.9.1
 Jinja2==2.11.3
 Flask==1.1.2
 Flask-JSGlue==0.3.1
@@ -32,7 +32,7 @@ rsa==4.7.2
 six==1.15.0
 tensorboard==2.4.1
 tensorboard-plugin-wit==1.8.0
-tensorflow-cpu==2.4.1
+tensorflow-cpu==2.8.0
 tensorflow-estimator==2.4.0
 termcolor==1.1.0
 typing-extensions==3.7.4.3
